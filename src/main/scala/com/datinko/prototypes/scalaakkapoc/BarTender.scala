@@ -8,17 +8,31 @@ import akka.actor.{Actor, ActorLogging}
  */
 class BarTender extends Actor with ActorLogging {
 
+  var pintsBeingDrunk = 0
+
   override def receive: Receive = {
 
-    case Cash =>
-      log.info("One pint, coming up")
-      Thread.sleep(1000);
-      log.info("Here's your pint!")
+    case Token(quantity) =>
+      pintsBeingDrunk = pintsBeingDrunk + quantity
+      log.info(s"I'll get $quantity pints ready for [${sender.path}]")
 
-      sender ! Pint
+      for(number <- 1 to quantity) {
+        log.info(s"Pint $number coming right up for [${sender.path}}]")
+        Thread.sleep(1000);
+        log.info(s"Pint $number is ready, here you go [${sender.path}}]")
 
-    case EmptyPint =>
-      log.info("No more for you!")
-      context.system.shutdown()
+        sender ! Pint(number)
+      }
+
+    case EmptyPint(number) =>
+      pintsBeingDrunk match {
+        case 1 =>
+          log.info("You all drank those pints quick, time to close up shop!")
+          context.system.shutdown()
+
+        case n =>
+          pintsBeingDrunk = pintsBeingDrunk - 1
+          log.info(s"You drank pint $number quick, but there are still $pintsBeingDrunk pints out there being drunk")
+      }
   }
 }

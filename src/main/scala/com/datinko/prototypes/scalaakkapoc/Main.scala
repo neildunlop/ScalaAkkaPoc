@@ -15,11 +15,15 @@ object Main extends App {
   //create a bartender called zed
   val zed = system.actorOf(Props(new BarTender), "zed")
 
-  //create a new person actor called alice
+  //create our customers
   val alice = system.actorOf(Props(new Person), "alice")
+  val bob = system.actorOf(Props(new Person), "bob")
+  val charlie = system.actorOf(Props(new Person), "charlie")
 
-  //send a pint to alice
-  zed.tell(Cash, alice);
+  //hand out some tokens to our customers
+  zed.tell(Token(2), alice);
+  zed.tell(Token(3), bob);
+  zed.tell(Token(1), charlie);
 
 
   system.awaitTermination()

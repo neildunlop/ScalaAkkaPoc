@@ -5,4 +5,4 @@ package com.datinko.prototypes.scalaakkapoc
  * implement getters for any fields that are passed in as class arguments (aka constructor parameters).  They also
  * automatically include hashcode, equals and toString methods.
  */
-case object Pint
+case class Pint(number: Int)

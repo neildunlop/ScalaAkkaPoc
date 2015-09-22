@@ -11,12 +11,12 @@ class Person extends Actor with ActorLogging {
   def receive: Receive = {
 
     //route that defines what we do if we receive a 'pint' message.
-    case Pint =>
-      log.info("Thanks for the pint!");
+    case Pint(number) =>
+      log.info(s"Thanks for pint number $number!");
       Thread.sleep(1000)
-      log.info("I'm ready for another one..")
+      log.info(s"Done! Here is the empty glass for pint number $number.")
 
-      sender ! EmptyPint
+      sender ! EmptyPint(number)
   }
 
 }
